@@ -1,15 +1,17 @@
 /* Stopka: moduły konfiguracyjne (statyczne chipy). */
 
 const MODULES: { label: string; active?: boolean }[] = [
-  { label: 'Recepcjonista', active: true },
-  { label: 'Dyspozytor', active: true },
-  { label: 'Rezerwacja terminu', active: true },
-  { label: 'Magazyn / stany', active: true },
-  { label: 'Płatność / zaliczka' },
-  { label: 'Follow-up po usłudze' },
-  { label: 'Opinia Google' },
-  { label: 'Eskalacja do człowieka' },
+  // Aktywne = moduły użyte w przykładowej rozmowie (zob. salonScenario).
+  { label: 'Recepcjonista AI', active: true },
+  { label: 'Kwalifikacja leadów', active: true },
+  { label: 'Rezerwacja terminów', active: true },
+  { label: 'Płatności i zaliczki', active: true },
+  { label: 'Follow-up SMS / Email', active: true },
+  { label: 'Przekazanie do człowieka', active: true },
+  // Dostępne do dołożenia — branża to konfiguracja, nie kod.
+  { label: 'Opinie Google' },
   { label: 'Wielojęzyczność (UA / EN)' },
+  { label: 'Magazyn / stany' },
   { label: 'Raport zmianowy' },
 ];
 

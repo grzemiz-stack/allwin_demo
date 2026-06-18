@@ -49,10 +49,12 @@ body{
 .row{display:flex; max-width:84%; animation:rise .35s cubic-bezier(.2,.8,.2,1)}
 .row.bot{align-self:flex-start}
 .row.client{align-self:flex-end; flex-direction:row-reverse}
+.row.owner{align-self:flex-end; flex-direction:row-reverse}
 @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .bubble{padding:11px 15px; border-radius:16px; font-size:14.5px; line-height:1.45}
 .row.bot .bubble{background:var(--paper-2); border:1px solid var(--paper-line); border-bottom-left-radius:5px; color:var(--text-dark)}
 .row.client .bubble{background:var(--text-dark); color:#fff; border-bottom-right-radius:5px}
+.row.owner .bubble{background:var(--signal-soft); border:1px solid var(--signal); border-bottom-right-radius:5px; color:var(--text-dark)}
 .lbl{font-size:10.5px; font-weight:600; letter-spacing:.04em; text-transform:uppercase; margin-bottom:5px; opacity:.55}
 .typing{display:inline-flex;gap:4px;align-items:center;padding:13px 16px}
 .typing span{width:7px;height:7px;border-radius:50%;background:var(--text-mute);opacity:.5;animation:tp 1s infinite}

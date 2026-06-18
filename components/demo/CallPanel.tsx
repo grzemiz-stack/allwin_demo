@@ -44,9 +44,9 @@ export default function CallPanel({
   return (
     <section className="call">
       <div className="call-head">
-        <div className="avatar">SG</div>
+        <div className="avatar">AI</div>
         <div className="who">
-          <div className="name">Szybka Guma — wulkanizacja</div>
+          <div className="name">Ołłin — asystent Allwin</div>
           <div className="sub">{sub}</div>
         </div>
       </div>

@@ -8,7 +8,9 @@
    Oba trafiają do tego samego reducera i tych samych komponentów.
    ============================================================ */
 
-export type Role = 'bot' | 'user';
+/** 'bot' = asystent (Ołłin), 'user' = klient w przykładowym połączeniu,
+ *  'owner' = właściciel/rozmówca, do którego mówi Ołłin w ramce demo. */
+export type Role = 'bot' | 'user' | 'owner';
 export type StatusCls = 'work' | 'ok';
 
 /** Pojedynczy wiersz klucz-wartość w karcie ops. */

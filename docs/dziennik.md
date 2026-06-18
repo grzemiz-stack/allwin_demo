@@ -73,3 +73,30 @@ Staggerowanie choreografii (spójność trybów): `ToolOutcome` zwraca teraz
 do asystenta od razu (bot mówi, ops kaskaduje równolegle). `znajdz_mechanika`
 rozkłada się na ~3,5 s (0/700/1200/1700/2500/3500 ms), magazyn i zlecenie też
 mają naturalny rytm. Tryb skryptowy i live używają identycznej mechaniki czasu.
+
+## 2026-06-18 — Nowy scenariusz skryptowy: meta-demo gabinet kosmetyczny
+
+Podmiana scenariusza skryptowego (tire → salon) wg skryptu Marcina
+(„SKRYPT POKAZOWY — wersja robocza do akceptacji").
+
+Zrobione:
+- `scenarios.ts`: `s11Scenario` → `salonScenario`. Meta-demo: Ołłin przedstawia
+  się właścicielowi, słyszy branżę (gabinet kosmetyczny) i odgrywa przykładowe
+  połączenie z klientką. 10 kroków 1:1 ze skryptem; moduły zapalają się na
+  zielono kolejno: Recepcjonista AI → Kwalifikacja leadów → Rezerwacja terminów
+  → Płatności i zaliczki → Follow-up SMS/Email → (opcjonalnie) Przekazanie do
+  człowieka. Karta „Podsumowanie" z sentinelem `{{elapsed}}`.
+- Trzeci mówca: `Role` rozszerzony o `'owner'` (właściciel/rozmówca demo).
+  `Transcript` mapuje: bot→„Ołłin", user→„Klient" (klient w przykładzie),
+  owner→„Właściciel". Nowy styl `.row.owner` (akcent --signal, prawa strona).
+- `CallPanel`: nagłówek „Szybka Guma — wulkanizacja" → „Ołłin — asystent Allwin"
+  (avatar AI). `ModulesBar`: chipy dopasowane do scenariusza salon.
+- `DemoStage` używa `salonScenario`.
+
+Weryfikacja: `tsc --noEmit` czysty, `npm run build` czysty (/demo 7,33 kB).
+
+UWAGA / dług: tryb LIVE nie został zmieniony. Asystent Vapi + `toolMap.ts`
+(`utworz_zlecenie`/`sprawdz_magazyn`/`znajdz_mechanika`/`wyslij_sms`) to wciąż
+wertykal wulkanizacji. Aby „Zadzwoń sam" pasował do demo salonu, trzeba
+przekonfigurować asystenta demo w Vapi (po polsku) i `toolMap` pod moduły
+kosmetyczne (rezerwacja/zaliczka/follow-up). Skrypt = salon, live = tire.

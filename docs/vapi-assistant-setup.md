@@ -14,6 +14,13 @@ NEXT_PUBLIC_VAPI_DEMO_ASSISTANT_ID=asst_...
 Bez tych zmiennych przycisk „Zadzwoń sam" jest wyłączony (tryb skryptowy działa
 zawsze).
 
+## Tożsamość biznesu (wertykal LIVE = wulkanizacja)
+Asystent demo LIVE odgrywa wulkanizację **„Kołomir"**. Nazwa MUSI być spójna z
+`lib/demo/toolMap.ts` (log SMS: „Mechanik Kołomir w drodze…”). W system promptcie
+asystenta w Vapi ustaw powitanie typu **„Wulkanizacja Kołomir, dzień dobry. W czym
+mogę pomóc?”** (wcześniej „Szybka Guma” — zmienione, by nie rozjeżdżać się z frontem).
+Tryb skryptowy to osobny wertykal (salon, `salonScenario`) i nie dotyczy tego asystenta.
+
 ## Narzędzia (client-side) — kontrakt
 Nazwy i parametry MUSZĄ pokrywać się z `lib/demo/toolMap.ts` (`KNOWN_TOOLS`).
 Każde narzędzie skonfiguruj jako **client-side / async** (wykonywane w

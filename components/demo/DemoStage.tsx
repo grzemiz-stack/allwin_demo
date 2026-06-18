@@ -11,7 +11,7 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
 import type { DemoEvent } from '@/lib/demo/events';
 import { eventReducer, initialState } from '@/lib/demo/reducer';
-import { s11Scenario } from '@/lib/demo/scenarios';
+import { salonScenario } from '@/lib/demo/scenarios';
 import { runScenario, type RunHandle } from '@/lib/demo/scriptRunner';
 import { createVapiSource, type VapiSourceHandle } from '@/lib/demo/vapiSource';
 import TopBar from './TopBar';
@@ -89,7 +89,7 @@ export default function DemoStage() {
     emit({ kind: 'reset' });
     emit({ kind: 'meta', sub: 'łączenie…' });
 
-    runHandleRef.current = runScenario(s11Scenario, emit, {
+    runHandleRef.current = runScenario(salonScenario, emit, {
       getElapsed: () => formatElapsed(Date.now() - startedAtRef.current),
       onDone: () => {
         setMode('idle');

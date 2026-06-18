@@ -24,7 +24,9 @@ komponenty.
 - `lib/demo/events.ts` — typ `DemoEvent` (kontrakt obu źródeł).
 - `lib/demo/reducer.ts` — `eventReducer`: `DemoEvent` → `DemoState` (czysty, bez timera).
 - `lib/demo/scenarios.ts` — scenariusze skryptowe (`ScenarioStep[]`); **podmiana
-  scenariusza = podmiana tego pliku**, brak logiki renderowania.
+  scenariusza = podmiana tego pliku**, brak logiki renderowania. Aktualny:
+  `salonScenario` — meta-demo Ołłin → właściciel gabinetu kosmetycznego
+  (ramka pitch + przykładowe połączenie z klientką; moduły zapalają się kolejno).
 - `lib/demo/scriptRunner.ts` — odpala scenariusz (setTimeout + cleanup), podstawia
   sentinel `{{elapsed}}` żywym czasem.
 - `lib/demo/vapiSource.ts` — `@vapi-ai/web` → `DemoEvent` (transcript→bąbelek,
@@ -40,6 +42,12 @@ Komponenty (`components/demo/`): `DemoStage` (orkiestrator + timer + `emit`),
 - **Live** ("Zadzwoń sam") — `@vapi-ai/web`, klient dzwoni z mikrofonu. Zawsze
   widoczny obok skryptowego (tryb skryptowy = fallback dla każdej przeglądarki).
   Bez ENV przycisk jest `disabled` z tooltipem.
+
+> **Uwaga (rozjazd wertykali):** tryb skryptowy to **salon** (`salonScenario`),
+> a tryb live (asystent Vapi + `toolMap.ts`) to wciąż **wulkanizacja**
+> (`utworz_zlecenie`/`sprawdz_magazyn`/`znajdz_mechanika`/`wyslij_sms`). Aby
+> „Zadzwoń sam" pasował do demo salonu, trzeba przekonfigurować asystenta demo
+> w Vapi i `toolMap` pod moduły kosmetyczne.
 
 ## Izolacja (krytyczne — nic realnie nie dispatchujemy)
 **Narzędzia są client-side.** Demo-asystent w Vapi wywołuje narzędzia, które

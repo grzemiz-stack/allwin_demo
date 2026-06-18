@@ -1,11 +1,16 @@
 /* ============================================================
    SCENARIUSZE SKRYPTOWE (deterministyczne)
-   Port tablicy script[] z prototypu 1:1. Każdy krok = {delay, events}
-   — opóźnienie w ms (jak oryginalne `t`) + lista DemoEvent do emisji.
-   Podmiana scenariusza = podmiana tego pliku / eksportu. Nic poza
-   danymi tutaj nie ma — żadnej logiki renderowania.
+   Każdy krok = {delay, events} — opóźnienie w ms (jak oryginalne `t`)
+   + lista DemoEvent do emisji. Podmiana scenariusza = podmiana tego
+   pliku / eksportu. Nic poza danymi tutaj nie ma — żadnej logiki
+   renderowania.
 
-   Scenariusz: flak na S11 → mobilny dojazd ekipy.
+   Scenariusz: meta-demo Allwin (Ołłin) → właściciel gabinetu
+   kosmetycznego. Ołłin przedstawia się, słyszy branżę i odgrywa
+   przykładowe połączenie z klientką, w którym kolejne moduły
+   zapalają się na zielono (recepcja → kwalifikacja → rezerwacja →
+   zaliczka → follow-up), a na końcu wraca do właściciela z CTA.
+   Skrypt roboczy do akceptacji Marcina.
    ============================================================ */
 
 import type { DemoEvent } from './events';
@@ -20,168 +25,226 @@ export interface ScenarioStep {
 /** Sentinel: runner podstawia tu żywy czas połączenia (mm:ss). */
 export const ELAPSED = '{{elapsed}}';
 
-export const s11Scenario: ScenarioStep[] = [
+export const salonScenario: ScenarioStep[] = [
+  // — Krok 1: przywitanie (Ołłin → właściciel) —
   {
     delay: 300,
     events: [
-      { kind: 'call:start', session: 'A-2041' },
-      { kind: 'meta', sub: 'połączenie przychodzące…', opsMeta: 'sesja #A-2041' },
-      { kind: 'card', id: 'crm', icon: '👤', title: 'Identyfikacja klienta', status: 'SZUKAM', statusCls: 'work' },
+      { kind: 'call:start', session: 'DEMO-01' },
+      { kind: 'meta', sub: 'rozmowa z Allwin', opsMeta: 'demo · sesja #DEMO-01' },
+    ],
+  },
+  { delay: 500, events: [{ kind: 'typing', on: true }] },
+  {
+    delay: 1200,
+    events: [
       {
-        kind: 'kv',
-        id: 'crm',
-        pairs: [
-          { k: 'Numer', v: '+48 502 ••• 619', key: 'num', filled: true },
-          { k: 'Status', v: '—', key: 'stat' },
-        ],
+        kind: 'transcript',
+        role: 'bot',
+        text: 'Cześć, z tej strony Allwin — wirtualny pracownik głosowy dla firm. Powiedz mi, czym się zajmujesz, a pokażę Ci na żywo, jak mogę odciążyć Twój telefon.',
       },
     ],
   },
+
+  // — Krok 2: rozmówca podaje branżę —
+  {
+    delay: 1600,
+    events: [
+      {
+        kind: 'transcript',
+        role: 'owner',
+        text: 'Prowadzę gabinet kosmetyczny. Telefon dzwoni cały czas, a my często jesteśmy przy zabiegu i nie odbieramy.',
+      },
+    ],
+  },
+
+  // — Krok 3: Ołłin proponuje mini-demo —
+  { delay: 600, events: [{ kind: 'typing', on: true }] },
   {
     delay: 1300,
     events: [
-      { kind: 'fill', id: 'crm', key: 'stat', val: 'Nowy klient' },
-      { kind: 'status', id: 'crm', text: 'NOWY', cls: 'ok' },
+      {
+        kind: 'transcript',
+        role: 'bot',
+        text: 'Znam to. Pokażę Ci, co dzieje się, gdy w takiej chwili dzwoni klient, a ja odbieram zamiast Was. Słuchaj.',
+      },
     ],
   },
-  { delay: 600, events: [{ kind: 'typing', on: true }] },
-  { delay: 1100, events: [{ kind: 'transcript', role: 'bot', text: 'Wulkanizacja Szybka Guma, dzień dobry. W czym mogę pomóc?' }] },
-  { delay: 1500, events: [{ kind: 'transcript', role: 'user', text: 'Dzień dobry, złapałem gwoździa, mam flaka. Potrzebuję wymiany opony.' }] },
   {
-    delay: 700,
+    delay: 600,
     events: [
-      { kind: 'card', id: 'intent', icon: '🎯', title: 'Rozpoznana intencja', status: 'OK', statusCls: 'ok' },
+      { kind: 'meta', sub: 'przykładowe połączenie', opsMeta: 'połączenie przykładowe' },
+      { kind: 'card', id: 'recepcja', icon: '🎧', title: 'Recepcjonista AI', status: 'ODBIERAM', statusCls: 'work' },
+      { kind: 'log', id: 'recepcja', html: '<span class="ok">✓</span> <span class="w">odbieram zamiast Was</span>' },
+    ],
+  },
+
+  // — Krok 4: przykładowy telefon, klient —
+  {
+    delay: 1200,
+    events: [
+      {
+        kind: 'transcript',
+        role: 'user',
+        text: 'Dzień dobry, chciałabym umówić się na zabieg oczyszczania twarzy, najlepiej w tym tygodniu.',
+      },
+      { kind: 'status', id: 'recepcja', text: 'AKTYWNY', cls: 'ok' },
+    ],
+  },
+
+  // — Krok 5: Ołłin kwalifikuje —
+  { delay: 600, events: [{ kind: 'typing', on: true }] },
+  {
+    delay: 1300,
+    events: [
+      {
+        kind: 'transcript',
+        role: 'bot',
+        text: 'Jasne. To pierwszy raz u nas, czy była Pani już wcześniej? I czy chodzi o klasyczne oczyszczanie, czy z peelingiem?',
+      },
+      { kind: 'card', id: 'kwal', icon: '🎯', title: 'Kwalifikacja leadów', status: 'ZBIERAM', statusCls: 'work' },
       {
         kind: 'kv',
-        id: 'intent',
+        id: 'kwal',
         pairs: [
-          { k: 'Usługa', v: 'Wymiana opony', key: 'x', filled: true },
-          { k: 'Tryb', v: 'Awaria / pilne', key: 'y', filled: true },
+          { k: 'Wizyta', v: '—', key: 'w' },
+          { k: 'Zabieg', v: '—', key: 'z' },
         ],
       },
     ],
   },
-  { delay: 600, events: [{ kind: 'typing', on: true }] },
-  { delay: 1100, events: [{ kind: 'transcript', role: 'bot', text: 'Już pomagam. Jaki to samochód i jaki rozmiar opony?' }] },
-  { delay: 1600, events: [{ kind: 'transcript', role: 'user', text: 'Skoda Octavia, 205/55 R16.' }] },
+  { delay: 1500, events: [{ kind: 'transcript', role: 'user', text: 'Pierwszy raz. Poproszę oczyszczanie z peelingiem.' }] },
   {
-    delay: 700,
+    delay: 600,
     events: [
-      { kind: 'card', id: 'order', icon: '📋', title: 'Zlecenie #A-2041', status: 'UZUPEŁNIANIE', statusCls: 'work' },
-      {
-        kind: 'kv',
-        id: 'order',
-        pairs: [
-          { k: 'Pojazd', v: '—', key: 'poj' },
-          { k: 'Rozmiar', v: '—', key: 'roz' },
-          { k: 'Lokalizacja', v: '—', key: 'lok' },
-        ],
-      },
+      { kind: 'fill', id: 'kwal', key: 'w', val: 'Pierwsza wizyta' },
+      { kind: 'fill', id: 'kwal', key: 'z', val: 'Oczyszczanie + peeling' },
+      { kind: 'status', id: 'kwal', text: 'OK', cls: 'ok' },
     ],
   },
-  { delay: 500, events: [{ kind: 'fill', id: 'order', key: 'poj', val: 'Skoda Octavia' }] },
-  { delay: 500, events: [{ kind: 'fill', id: 'order', key: 'roz', val: '205/55 R16' }] },
+
+  // — Krok 6: Ołłin sprawdza termin i proponuje —
+  { delay: 500, events: [{ kind: 'typing', on: true }] },
   {
-    delay: 700,
+    delay: 1200,
     events: [
-      { kind: 'card', id: 'mag', icon: '📦', title: 'Magazyn', status: 'SPRAWDZAM', statusCls: 'work' },
-      { kind: 'log', id: 'mag', html: '<span class="hl">›</span> zapytanie: 205/55 R16' },
+      { kind: 'transcript', role: 'bot', text: 'Mam wolny czwartek o 16:00 albo piątek o 11:00. Który pasuje?' },
+      { kind: 'card', id: 'rezerw', icon: '📅', title: 'Rezerwacja terminów', status: 'SPRAWDZAM', statusCls: 'work' },
+      { kind: 'log', id: 'rezerw', html: '<span class="hl">›</span> wolne terminy: czw 16:00 · pt 11:00' },
+    ],
+  },
+  { delay: 1400, events: [{ kind: 'transcript', role: 'user', text: 'Czwartek o 16.' }] },
+  {
+    delay: 600,
+    events: [
+      { kind: 'log', id: 'rezerw', html: '<span class="ok">✓</span> <span class="w">wpis do kalendarza — czwartek 16:00</span>' },
+      {
+        kind: 'kv',
+        id: 'rezerw',
+        pairs: [
+          { k: 'Termin', v: 'czwartek, 16:00', key: 't', filled: true },
+          { k: 'Zabieg', v: 'Oczyszczanie + peeling', key: 'z', filled: true },
+        ],
+      },
+      { kind: 'status', id: 'rezerw', text: 'ZAREZERWOWANE', cls: 'ok' },
+    ],
+  },
+
+  // — Krok 7: zaliczka / anty-no-show —
+  { delay: 600, events: [{ kind: 'typing', on: true }] },
+  {
+    delay: 1300,
+    events: [
+      {
+        kind: 'transcript',
+        role: 'bot',
+        text: 'Zarezerwowane. Żeby potwierdzić termin, wyślę link do zaliczki 50 zł — odliczymy ją od ceny zabiegu.',
+      },
+      { kind: 'card', id: 'platnosc', icon: '💳', title: 'Płatności i zaliczki', status: 'WYSYŁAM LINK', statusCls: 'work' },
+      {
+        kind: 'kv',
+        id: 'platnosc',
+        pairs: [
+          { k: 'Zaliczka', v: '50 zł', key: 'z', filled: true },
+          { k: 'Status', v: 'link wysłany', key: 's', filled: true },
+        ],
+      },
     ],
   },
   {
     delay: 1000,
     events: [
-      { kind: 'log', id: 'mag', html: '<span class="ok">✓</span> <span class="w">dostępna — 4 szt. na stanie</span>' },
-      { kind: 'status', id: 'mag', text: 'DOSTĘPNA', cls: 'ok' },
+      { kind: 'log', id: 'platnosc', html: '<span class="ok">✓</span> <span class="w">płatność potwierdzona — termin zablokowany</span>' },
+      { kind: 'status', id: 'platnosc', text: 'POTWIERDZONA', cls: 'ok' },
     ],
   },
+
+  // — Krok 8: follow-up —
   { delay: 500, events: [{ kind: 'typing', on: true }] },
-  { delay: 1200, events: [{ kind: 'transcript', role: 'bot', text: 'Mamy tę oponę na stanie. Gdzie Pan się znajduje? Możemy dojechać.' }] },
-  { delay: 1700, events: [{ kind: 'transcript', role: 'user', text: 'Jestem na S11, parking przy Stęszewie, kierunek Poznań.' }] },
   {
-    delay: 600,
+    delay: 1300,
     events: [
-      { kind: 'fill', id: 'order', key: 'lok', val: 'S11 / Stęszew' },
-      { kind: 'status', id: 'order', text: 'KOMPLETNE', cls: 'ok' },
-      { kind: 'card', id: 'geo', icon: '📍', title: 'Geolokalizacja', status: 'OK', statusCls: 'ok' },
       {
-        kind: 'kv',
-        id: 'geo',
-        pairs: [
-          { k: 'Punkt', v: 'S11, węzeł Stęszew', key: 'a', filled: true },
-          { k: 'Współrzędne', v: '52.288, 16.706', key: 'b', filled: true },
-        ],
+        kind: 'transcript',
+        role: 'bot',
+        text: 'Gotowe. Dzień przed wizytą wyślę przypomnienie SMS-em, a po zabiegu krótką wiadomość, czy wszystko ok.',
       },
+      { kind: 'card', id: 'followup', icon: '✉️', title: 'Follow-up SMS / Email', status: 'PLANUJĘ', statusCls: 'work' },
+      { kind: 'log', id: 'followup', html: '<span class="ok">✓</span> <span class="w">przypomnienie SMS — dzień przed wizytą</span>' },
+      { kind: 'log', id: 'followup', html: '<span class="ok">✓</span> <span class="w">wiadomość po zabiegu — kontrola jakości</span>' },
     ],
   },
-  { delay: 600, events: [{ kind: 'typing', on: true }] },
-  { delay: 1100, events: [{ kind: 'transcript', role: 'bot', text: 'Sekundę, szukam najbliższego mechanika…' }] },
-  {
-    delay: 600,
-    events: [
-      { kind: 'card', id: 'disp', icon: '🛰️', title: 'Dyspozytor', status: 'LICZĘ', statusCls: 'work' },
-      { kind: 'log', id: 'disp', html: '<span class="hl">›</span> Haversine: skan 3 ekip w terenie' },
-    ],
-  },
-  { delay: 900, events: [{ kind: 'log', id: 'disp', html: '&nbsp;&nbsp;ekipa #1 — 11.4 km' }] },
-  { delay: 500, events: [{ kind: 'log', id: 'disp', html: '&nbsp;&nbsp;<span class="w">ekipa #2 — 4.2 km ◂ najbliższa</span>' }] },
-  { delay: 500, events: [{ kind: 'log', id: 'disp', html: '&nbsp;&nbsp;ekipa #3 — 18.0 km' }] },
-  { delay: 800, events: [{ kind: 'log', id: 'disp', html: '<span class="hl">›</span> ping → ekipa #2 (PIN_WAIT 90s)' }] },
-  {
-    delay: 1100,
-    events: [
-      { kind: 'log', id: 'disp', html: '<span class="ok">✓</span> <span class="w">potwierdzenie (CAS) — przyjęte</span>' },
-      { kind: 'status', id: 'disp', text: 'PRZYDZIELONE', cls: 'ok' },
-    ],
-  },
-  { delay: 700, events: [{ kind: 'typing', on: true }] },
-  { delay: 1300, events: [{ kind: 'transcript', role: 'bot', text: 'Mechanik dojedzie za około 25 minut. Potwierdzam wszystko SMS-em.' }] },
+  { delay: 700, events: [{ kind: 'status', id: 'followup', text: 'USTAWIONE', cls: 'ok' }] },
+
+  // — Krok 9: Ołłin wraca do rozmówcy (właściciela) —
   {
     delay: 700,
     events: [
-      { kind: 'card', id: 'book', icon: '📅', title: 'Rezerwacja', status: 'OK', statusCls: 'ok' },
+      { kind: 'meta', sub: 'rozmowa z Allwin', opsMeta: 'podsumowanie demo' },
+      { kind: 'typing', on: true },
+    ],
+  },
+  {
+    delay: 1400,
+    events: [
       {
-        kind: 'kv',
-        id: 'book',
-        pairs: [
-          { k: 'Ekipa', v: '#2 (4.2 km)', key: 'e', filled: true },
-          { k: 'Przyjazd', v: 'ok. 14:25', key: 'f', filled: true },
-          { k: 'ETA', v: '~25 min', key: 'g', filled: true },
-        ],
+        kind: 'transcript',
+        role: 'bot',
+        text: 'I tyle. Klient umówiony, zaliczka pobrana, przypomnienie ustawione — a Ty nawet nie odrywałeś się od pracy.',
       },
-    ],
-  },
-  {
-    delay: 700,
-    events: [
-      { kind: 'card', id: 'sms', icon: '✉️', title: 'Powiadomienie SMS', status: 'WYSŁANO', statusCls: 'ok' },
-      { kind: 'log', id: 'sms', html: '<span class="ok">✓</span> <span class="w">SMS → +48 502 ••• 619</span>' },
-      { kind: 'log', id: 'sms', html: '&nbsp;&nbsp;„Mechanik Szybka Guma w drodze, ETA 25 min. Zlecenie A-2041.”' },
-    ],
-  },
-  { delay: 900, events: [{ kind: 'transcript', role: 'user', text: 'Super, dziękuję bardzo!' }] },
-  { delay: 600, events: [{ kind: 'typing', on: true }] },
-  { delay: 1000, events: [{ kind: 'transcript', role: 'bot', text: 'Do usłyszenia. Wszystkie szczegóły są w SMS-ie. Miłego dnia!' }] },
-  {
-    delay: 900,
-    events: [
-      { kind: 'card', id: 'close', icon: '✅', title: 'Zlecenie domknięte', status: 'POTWIERDZONE', statusCls: 'ok' },
+      { kind: 'card', id: 'recap', icon: '✅', title: 'Podsumowanie', status: 'GOTOWE', statusCls: 'ok' },
       {
         kind: 'kv',
-        id: 'close',
+        id: 'recap',
         pairs: [
-          { k: 'Nr', v: '#A-2041', key: 'n', filled: true },
+          { k: 'Klient', v: 'umówiony ✓', key: 'k', filled: true },
+          { k: 'Zaliczka', v: 'pobrana ✓', key: 'z', filled: true },
+          { k: 'Przypomnienie', v: 'ustawione ✓', key: 'p', filled: true },
           { k: 'Czas rozmowy', v: ELAPSED, key: 'c', filled: true },
-          { k: 'Obsługa', v: 'w pełni automatyczna', key: 'o', filled: true },
         ],
       },
     ],
   },
+
+  // — Krok 10: zakończenie z zastrzeżeniem (+ opcjonalne przekazanie) —
+  { delay: 700, events: [{ kind: 'typing', on: true }] },
   {
-    delay: 600,
+    delay: 1500,
     events: [
-      { kind: 'call:end', opsMeta: 'zakończono · #A-2041' },
-      { kind: 'meta', sub: 'połączenie zakończone' },
+      {
+        kind: 'transcript',
+        role: 'bot',
+        text: 'To był tylko przykład dla gabinetu — dokładnie te same moduły dobiera się i ustawia indywidualnie pod Twoją firmę i sposób pracy. Chcesz pogadać, jak by to wyglądało u Ciebie? Zostaw kontakt albo zadzwoń.',
+      },
+      { kind: 'card', id: 'przekazanie', icon: '🤝', title: 'Przekazanie do człowieka', status: 'GOTOWY', statusCls: 'work' },
+      { kind: 'log', id: 'przekazanie', html: '<span class="hl">›</span> na życzenie łączę z zespołem' },
+    ],
+  },
+  {
+    delay: 800,
+    events: [
+      { kind: 'call:end', opsMeta: 'zakończono · demo #DEMO-01' },
+      { kind: 'meta', sub: 'rozmowa zakończona' },
     ],
   },
 ];

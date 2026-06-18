@@ -147,7 +147,7 @@ const handlers: Record<string, Handler> = {
         {
           delay: 600,
           events: [
-            { kind: 'log', id: 'sms', html: '&nbsp;&nbsp;„Mechanik Szybka Guma w drodze, ETA 25 min. Zlecenie A-2041.”' },
+            { kind: 'log', id: 'sms', html: '&nbsp;&nbsp;„Mechanik Kołomir w drodze, ETA 25 min. Zlecenie A-2041.”' },
           ],
         },
       ],
