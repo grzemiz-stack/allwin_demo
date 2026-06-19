@@ -46,7 +46,7 @@ export default function CallPanel({
       <div className="call-head">
         <div className="avatar">AI</div>
         <div className="who">
-          <div className="name">Ołłin — asystent Allwin</div>
+          <div className="name">Allwin — wirtualny asystent głosowy</div>
           <div className="sub">{sub}</div>
         </div>
       </div>

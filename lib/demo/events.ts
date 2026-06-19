@@ -8,8 +8,12 @@
    Oba trafiają do tego samego reducera i tych samych komponentów.
    ============================================================ */
 
-/** 'bot' = asystent (Ołłin), 'user' = klient w przykładowym połączeniu,
- *  'owner' = właściciel/rozmówca, do którego mówi Ołłin w ramce demo. */
+/** 'bot' = asystent (Allwin), 'user' = klient w przykładowym połączeniu,
+ *  'owner' = właściciel/rozmówca, do którego mówi Allwin w ramce demo.
+ *
+ *  Nazwa marki w widocznym UI to ZAWSZE „Allwin". Zapis „Ołłin" istnieje
+ *  wyłącznie jako fonetyka dla TTS (prompt/głos asystenta Vapi czyta markę
+ *  jako „Ołłin") — nie wolno go używać w żadnej widocznej etykiecie/treści. */
 export type Role = 'bot' | 'user' | 'owner';
 export type StatusCls = 'work' | 'ok';
 

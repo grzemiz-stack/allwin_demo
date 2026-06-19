@@ -5,8 +5,8 @@
    pliku / eksportu. Nic poza danymi tutaj nie ma — żadnej logiki
    renderowania.
 
-   Scenariusz: meta-demo Allwin (Ołłin) → właściciel gabinetu
-   kosmetycznego. Ołłin przedstawia się, słyszy branżę i odgrywa
+   Scenariusz: meta-demo Allwin → właściciel gabinetu
+   kosmetycznego. Allwin przedstawia się, słyszy branżę i odgrywa
    przykładowe połączenie z klientką, w którym kolejne moduły
    zapalają się na zielono (recepcja → kwalifikacja → rezerwacja →
    zaliczka → follow-up), a na końcu wraca do właściciela z CTA.
@@ -26,7 +26,7 @@ export interface ScenarioStep {
 export const ELAPSED = '{{elapsed}}';
 
 export const salonScenario: ScenarioStep[] = [
-  // — Krok 1: przywitanie (Ołłin → właściciel) —
+  // — Krok 1: przywitanie (Allwin → właściciel) —
   {
     delay: 300,
     events: [
@@ -58,7 +58,7 @@ export const salonScenario: ScenarioStep[] = [
     ],
   },
 
-  // — Krok 3: Ołłin proponuje mini-demo —
+  // — Krok 3: Allwin proponuje mini-demo —
   { delay: 600, events: [{ kind: 'typing', on: true }] },
   {
     delay: 1300,
@@ -92,7 +92,7 @@ export const salonScenario: ScenarioStep[] = [
     ],
   },
 
-  // — Krok 5: Ołłin kwalifikuje —
+  // — Krok 5: Allwin kwalifikuje —
   { delay: 600, events: [{ kind: 'typing', on: true }] },
   {
     delay: 1300,
@@ -123,7 +123,7 @@ export const salonScenario: ScenarioStep[] = [
     ],
   },
 
-  // — Krok 6: Ołłin sprawdza termin i proponuje —
+  // — Krok 6: Allwin sprawdza termin i proponuje —
   { delay: 500, events: [{ kind: 'typing', on: true }] },
   {
     delay: 1200,
@@ -196,7 +196,7 @@ export const salonScenario: ScenarioStep[] = [
   },
   { delay: 700, events: [{ kind: 'status', id: 'followup', text: 'USTAWIONE', cls: 'ok' }] },
 
-  // — Krok 9: Ołłin wraca do rozmówcy (właściciela) —
+  // — Krok 9: Allwin wraca do rozmówcy (właściciela) —
   {
     delay: 700,
     events: [
