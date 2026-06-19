@@ -123,10 +123,15 @@ body{
 .modules{background:var(--ink); border-top:1px solid var(--ink-line); padding:18px 22px 22px}
 .modules h3{font-family:var(--display); font-size:11px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:var(--on-ink-mute); margin-bottom:12px}
 .chips{display:flex; flex-wrap:wrap; gap:9px}
-.chip{font-family:var(--body); font-size:12.5px; color:var(--on-ink); background:var(--ink-2); border:1px solid var(--ink-line); border-radius:999px; padding:7px 13px; display:inline-flex; align-items:center; gap:7px}
-.chip.active{border-color:var(--signal); color:#fff}
+.chip{font-family:var(--body); font-size:12.5px; color:var(--on-ink); background:var(--ink-2); border:1px solid var(--ink-line); border-radius:999px; padding:7px 13px; display:inline-flex; align-items:center; gap:7px; transition:border-color .25s, color .25s}
 .chip .d{width:6px;height:6px;border-radius:50%;background:var(--on-ink-mute)}
-.chip.active .d{background:var(--signal)}
+/* active — agent właśnie używa modułu: pomarańcz + puls */
+.chip.active{border-color:var(--signal); color:#fff}
+.chip.active .d{background:var(--signal); animation:pillpulse 1.2s ease-out infinite}
+@keyframes pillpulse{0%{box-shadow:0 0 0 0 var(--signal-soft)}70%{box-shadow:0 0 0 6px transparent}100%{box-shadow:0 0 0 0 transparent}}
+/* done — moduł zakończył: zielony + ptaszek */
+.chip.done{border-color:var(--confirm); color:#fff}
+.chip.done .chk{font-size:11px; font-weight:700; line-height:1; color:var(--confirm)}
 
 @media (max-width:840px){
   .stage{grid-template-columns:1fr; grid-template-rows:auto auto}
@@ -134,6 +139,9 @@ body{
   .transcript{max-height:46vh}
   .ops-body{max-height:52vh}
   .row{max-width:90%}
+  /* mobile A: jeden rząd z poziomym scrollem; aktywny pill dojeżdża w kadr (scrollIntoView) */
+  .chips{flex-wrap:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch}
+  .chip{flex:0 0 auto}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important; scroll-behavior:auto!important}

@@ -199,7 +199,7 @@ export default function DemoStage() {
         />
         <OpsConsole cards={state.cards} opsMeta={state.opsMeta} />
       </div>
-      <ModulesBar />
+      <ModulesBar cards={state.cards} />
     </>
   );
 }

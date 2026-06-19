@@ -1,31 +1,82 @@
-/* Stopka: moduły konfiguracyjne (statyczne chipy). */
+/* Stopka: pille modułów. Stan każdego pilla (idle / active / done) jest
+   WYPROWADZONY z tego samego `state.cards` co OpsConsole — bez osobnego
+   strumienia eventów. `cardId` wiąże pill z kartą scenariusza; moduł bez
+   `cardId` jest „do dołożenia" i zostaje idle. */
+'use client';
 
-const MODULES: { label: string; active?: boolean }[] = [
-  // Aktywne = moduły użyte w przykładowej rozmowie (zob. salonScenario).
-  { label: 'Recepcjonista AI', active: true },
-  { label: 'Kwalifikacja leadów', active: true },
-  { label: 'Rezerwacja terminów', active: true },
-  { label: 'Płatności i zaliczki', active: true },
-  { label: 'Follow-up SMS / Email', active: true },
-  { label: 'Przekazanie do człowieka', active: true },
-  // Dostępne do dołożenia — branża to konfiguracja, nie kod.
+import { useEffect, useRef } from 'react';
+import type { OpsCard } from '@/lib/demo/reducer';
+
+type PillState = 'idle' | 'active' | 'done';
+
+const MODULES: { label: string; cardId?: string }[] = [
+  // Aktywne w scenariuszu — kolejność = kolejność zapalania (zob. salonScenario).
+  { label: 'Recepcjonista AI', cardId: 'recepcja' },
+  { label: 'Kwalifikacja leadów', cardId: 'kwal' },
+  { label: 'Rezerwacja terminów', cardId: 'rezerw' },
+  { label: 'Płatności i zaliczki', cardId: 'platnosc' },
+  { label: 'Follow-up SMS / Email', cardId: 'followup' },
+  { label: 'Przekazanie do człowieka', cardId: 'przekazanie' },
+  // Do dołożenia — branża to konfiguracja, nie kod (zawsze idle).
   { label: 'Opinie Google' },
   { label: 'Wielojęzyczność (UA / EN)' },
   { label: 'Magazyn / stany' },
   { label: 'Raport zmianowy' },
 ];
 
-export default function ModulesBar() {
+/** idle = brak karty; active = karta w toku (work); done = karta domknięta (ok). */
+function deriveState(cardId: string | undefined, cards: OpsCard[]): PillState {
+  if (!cardId) return 'idle';
+  const card = cards.find((c) => c.id === cardId);
+  if (!card) return 'idle';
+  return card.done ? 'done' : 'active';
+}
+
+export default function ModulesBar({ cards }: { cards: OpsCard[] }) {
+  const activeRef = useRef<HTMLSpanElement | null>(null);
+
+  const states = MODULES.map((m) => deriveState(m.cardId, cards));
+  // Sygnatura aktywnych modułów — zmiana = inny pill się zapalił.
+  const activeKey = MODULES.filter((_, i) => states[i] === 'active')
+    .map((m) => m.cardId)
+    .join(',');
+
+  // Mobile A: aktywny pill zawsze w polu widzenia (poziomy scroll w .chips).
+  useEffect(() => {
+    if (!activeKey || !activeRef.current) return;
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    activeRef.current.scrollIntoView({
+      inline: 'nearest',
+      block: 'nearest',
+      behavior: reduce ? 'auto' : 'smooth',
+    });
+  }, [activeKey]);
+
   return (
     <div className="modules">
       <h3>Moduły, które możemy dołożyć — branża to konfiguracja, nie kod</h3>
       <div className="chips">
-        {MODULES.map((m) => (
-          <span className={`chip${m.active ? ' active' : ''}`} key={m.label}>
-            <span className="d" />
-            {m.label}
-          </span>
-        ))}
+        {MODULES.map((m, i) => {
+          const state = states[i];
+          return (
+            <span
+              className={`chip ${state}`}
+              key={m.label}
+              ref={state === 'active' ? activeRef : undefined}
+            >
+              {state === 'done' ? (
+                <span className="chk" aria-hidden="true">
+                  ✓
+                </span>
+              ) : (
+                <span className="d" />
+              )}
+              {m.label}
+            </span>
+          );
+        })}
       </div>
     </div>
   );
