@@ -100,3 +100,34 @@ UWAGA / dług: tryb LIVE nie został zmieniony. Asystent Vapi + `toolMap.ts`
 wertykal wulkanizacji. Aby „Zadzwoń sam" pasował do demo salonu, trzeba
 przekonfigurować asystenta demo w Vapi (po polsku) i `toolMap` pod moduły
 kosmetyczne (rezerwacja/zaliczka/follow-up). Skrypt = salon, live = tire.
+
+## 2026-06-23 — Nowy wertykal skryptowy: ClimaPolska (HVAC)
+
+Branch `feat/climapolska-demo` z `feat/salon-demo`. Dodanie wertykalu HVAC
+(montaż i serwis klimatyzacji / pomp ciepła) jako drugiego scenariusza
+skryptowego — **współistnienie**, salon zostaje.
+
+Zrobione:
+- `scenarios.ts`: dopisany `export const climaScenario` obok `salonScenario`
+  (salon nietknięty). Meta-demo: Allwin → właściciel ClimaPolska. Główny
+  przebieg = **lead** (oględziny), drugi krótki beat = **ticket** (awaria).
+  Dwa moduły z dokładnymi kontraktami pól:
+  - karta `konsultacja` (lead) — KV: typObiektu, liczbaPomieszczen, zakres,
+    lokalizacja, preferowanyTermin, imie, telefon; status:
+    nowy → termin_zaproponowany → potwierdzony (wypełniane krok po kroku).
+  - karta `zgloszenie` (ticket) — KV: typZgloszenia, urzadzenie, objaw,
+    pilnosc, lokalizacja, imie, telefon, preferowanyTermin (pełna karta + KV
+    od razu gotowe); status: nowe → przyjete → zaplanowane.
+  Karty wspierające: `recepcja`, `przekazanie`, `recap` (sentinel `{{elapsed}}`).
+- `DemoStage`: przełączony import i użycie `salonScenario` → `climaScenario`
+  (l. 14 + 92). Reszta orkiestracji bez zmian.
+- `ModulesBar`: `MODULES[]` pod HVAC — aktywne: Recepcjonista AI →
+  Konsultacja/oględziny → Zgłoszenie serwisowe/awaria → Przekazanie do
+  człowieka; „do dołożenia": Wyceny i kosztorysy, Przeglądy okresowe,
+  Dyspozytor ekip, Przypomnienia SMS/Email, Gwarancje, Wielojęzyczność.
+
+Decyzje (zatwierdzone): brand „Allwin" + akcent pomarańczowy bez zmian —
+`globals.css`/`layout.tsx`/`CallPanel.tsx` NIE ruszane.
+
+UWAGA / dług: jak w salonie, tryb LIVE (Vapi + `toolMap.ts`) nie został
+zmieniony — wciąż wulkanizacja. Skrypt = ClimaPolska, live = tire.
