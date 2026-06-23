@@ -10,18 +10,18 @@ import type { OpsCard } from '@/lib/demo/reducer';
 type PillState = 'idle' | 'active' | 'done';
 
 const MODULES: { label: string; cardId?: string }[] = [
-  // Aktywne w scenariuszu — kolejność = kolejność zapalania (zob. salonScenario).
+  // Aktywne w scenariuszu — kolejność = kolejność zapalania (zob. climaScenario).
   { label: 'Recepcjonista AI', cardId: 'recepcja' },
-  { label: 'Kwalifikacja leadów', cardId: 'kwal' },
-  { label: 'Rezerwacja terminów', cardId: 'rezerw' },
-  { label: 'Płatności i zaliczki', cardId: 'platnosc' },
-  { label: 'Follow-up SMS / Email', cardId: 'followup' },
+  { label: 'Konsultacja / oględziny', cardId: 'konsultacja' },
+  { label: 'Zgłoszenie serwisowe / awaria', cardId: 'zgloszenie' },
   { label: 'Przekazanie do człowieka', cardId: 'przekazanie' },
   // Do dołożenia — branża to konfiguracja, nie kod (zawsze idle).
-  { label: 'Opinie Google' },
+  { label: 'Wyceny i kosztorysy' },
+  { label: 'Przeglądy okresowe' },
+  { label: 'Dyspozytor ekip' },
+  { label: 'Przypomnienia SMS / Email' },
+  { label: 'Gwarancje i serwis pogwarancyjny' },
   { label: 'Wielojęzyczność (UA / EN)' },
-  { label: 'Magazyn / stany' },
-  { label: 'Raport zmianowy' },
 ];
 
 /** idle = brak karty; active = karta w toku (work); done = karta domknięta (ok). */
