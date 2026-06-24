@@ -131,3 +131,54 @@ Decyzje (zatwierdzone): brand „Allwin" + akcent pomarańczowy bez zmian —
 
 UWAGA / dług: jak w salonie, tryb LIVE (Vapi + `toolMap.ts`) nie został
 zmieniony — wciąż wulkanizacja. Skrypt = ClimaPolska, live = tire.
+
+## 2026-06-24 — Nowy route `/panel`: back-office „Panel zgłoszeń" (ClimaPolska)
+
+Branch `feat/climapolska-demo`. Dodanie drugiego widoku obok `/demo`: backoffice,
+w którym leady i zgłoszenia serwisowe „złapane z rozmów" lądują jako tablica
+kanban (recepcja/dyspozycja). Wzorzec designu: `climapolska-backoffice.jsx`
+(kanban + szuflada detali + ślad „z rozmowy"). Demo nadal bezstanowe — seed +
+`useState`, bez bazy.
+
+Zrobione:
+- `lib/panel/contracts.ts` — kontrakt pól i statusów leada/zgłoszenia (źródło
+  prawdy dla `/panel`): `LEAD_FLOW` (nowy → termin_zaproponowany → potwierdzony),
+  `SERV_FLOW` (nowe → przyjete → zaplanowane), `LEAD_FIELDS`/`SERV_FIELDS`,
+  `PILNOSC`, typy `Lead`/`Ticket`, helpery `statusMeta`/`nextStatus`. Mirroruje
+  `climaScenario` (scenarios.ts:260–266) — przy zmianie kontraktu zmienić OBA.
+- `lib/panel/seed.ts` — 5 leadów + 4 zgłoszenia (Poznań, spójnie ze scenariuszem;
+  L-1042 Marek Kowalski / Grunwald i S-2208 Anna Nowak / biuro wprost z `climaScenario`).
+- `components/panel/`: `icons.tsx` (14 inline SVG zamiast lucide), `Pills.tsx`
+  (StatusPill + CaptureTag „z rozmowy"), `Card.tsx`, `Column.tsx`, `Drawer.tsx`
+  (wiersze pól iterowane po kontrakcie; „Przesuń do: <następny status>"),
+  `PanelBoard.tsx` (taby lead/serwis, KPI nowe/pilne/łącznie, tablica + szuflada,
+  `advance` przesuwa status lokalnie).
+- `app/panel/page.tsx` — route + `metadata`.
+- `app/globals.css` — nowe tokeny `--mid`/`--mid-soft` (niebieski, środkowy status)
+  + sekcja `.panel-*` (port designu na klasy CSS, jasna paleta na `--paper`,
+  akcent `--signal`, domknięcie `--confirm`, szuflada slide-in, responsywność).
+
+Decyzje (zatwierdzone):
+- Kontrakt `/panel` osobny (`lib/panel/contracts.ts`); `climaScenario`/`scenarios.ts`
+  NIE ruszane — uniknięcie ryzyka regresji działającego demo. Kontrakt mirrorowany,
+  nie współdzielony (komentarz „zmień OBA miejsca").
+- Środkowy status = nowy token `--mid` (brak istniejącego niebieskiego); jasna
+  paleta na `var(--paper)`; zero nowych zależności (lucide → inline SVG, fonty
+  jak w projekcie).
+- Seed = Poznań (miasto `climaScenario`), nie Warszawa z wzorca jsx.
+
+Dla instrukcji obsługi: nowy ekran pod adresem `/panel` — „Panel zgłoszeń". Pod
+górnym paskiem dwie zakładki: **Leady — oględziny** i **Serwis**. Każda pokazuje
+tablicę z kolumnami wg etapu (np. dla leadów: Nowy → Termin zaproponowany →
+Potwierdzony). W wersji demo to przykładowe pozycje pokazujące, jak zgłoszenia
+z rozmów wyglądają w panelu — każda ma znacznik „z rozmowy" i godzinę. Docelowo
+na produkcji wpadają tu automatycznie z każdej odebranej rozmowy, bez ręcznego
+przepisywania. Awarie pilne mają czerwoną plakietkę „Pilne". Kliknięcie karty otwiera
+z prawej szufladę ze szczegółami i telefonem; przyciskiem **„Przesuń do: …"**
+przesuwa się zgłoszenie do następnego etapu (np. z „Nowy" na „Termin
+zaproponowany"). U góry liczniki: ile nowych dziś, ile pilnych, ile łącznie.
+(Nowy ekran — przyda się screenshot do instrukcji.)
+
+Weryfikacja: `npm run build` exit 0 (route `/panel` static, 3,9 kB); `/demo`
+bez zmian (8,09 kB). `npm run dev` → `GET /panel` 200, SSR renderuje treść i seed.
+KPI z seeda: nowe 3 / pilne 1 / łącznie 9.
